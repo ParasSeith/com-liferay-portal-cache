@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.cache.single.internal;
+package com.liferay.portal.cache.single.internal.activator;
 
 import com.liferay.portal.cache.single.internal.bootstrap.SinglePortalCacheBootstrapLoaderFactory;
 import com.liferay.portal.cache.single.internal.distribution.SinglePortalCacheReplicatorFactory;
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Shuyang Zhou
  */
 @Component(immediate = true)
-public class GateKeeper {
+public class GatekeeperActivator {
 
 	@Activate
 	public void activate(ComponentContext componentContext) {
