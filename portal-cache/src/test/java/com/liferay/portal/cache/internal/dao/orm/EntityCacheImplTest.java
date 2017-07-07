@@ -62,19 +62,17 @@ public class EntityCacheImplTest {
 	@Test
 	public void testPutAndGetNullModel() throws Exception {
 		_testPutAndGetNullModel(false);
-
 		_testPutAndGetNullModel(true);
 	}
 
 	private void _testPutAndGetNullModel(boolean serialized) throws Exception {
 		EntityCacheImpl entityCacheImpl = new EntityCacheImpl();
 
-		entityCacheImpl.setProps(_props);
-
 		entityCacheImpl.setMultiVMPool(
 			(MultiVMPool)ProxyUtil.newProxyInstance(
 				_classLoader, new Class<?>[] {MultiVMPool.class},
 				new MultiVMPoolInvocationHandler(serialized)));
+		entityCacheImpl.setProps(_props);
 
 		entityCacheImpl.activate();
 
@@ -150,10 +148,10 @@ public class EntityCacheImplTest {
 
 			if (methodName.equals("get")) {
 				if (_serialized) {
-					byte[] data = (byte[])_map.get(args[0]);
+					byte[] bytes = (byte[])_map.get(args[0]);
 
 					Deserializer deserializer = new Deserializer(
-						ByteBuffer.wrap(data));
+						ByteBuffer.wrap(bytes));
 
 					return deserializer.readObject();
 				}
