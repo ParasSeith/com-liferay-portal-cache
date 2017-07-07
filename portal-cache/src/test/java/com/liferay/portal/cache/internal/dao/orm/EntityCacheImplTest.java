@@ -51,7 +51,6 @@ public class EntityCacheImplTest {
 		RegistryUtil.setRegistry(new BasicRegistryImpl());
 
 		_classLoader = EntityCacheImplTest.class.getClassLoader();
-
 		_nullModel = ReflectionTestUtil.getFieldValue(
 			BasePersistenceImpl.class, "nullModel");
 
