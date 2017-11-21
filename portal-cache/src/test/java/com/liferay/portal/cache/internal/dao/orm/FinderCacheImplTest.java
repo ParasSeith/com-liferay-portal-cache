@@ -210,7 +210,6 @@ public class FinderCacheImplTest {
 			Set<Serializable> primaryKeys) {
 
 			Assert.assertNotNull(_keys);
-
 			Assert.assertEquals(_keys, primaryKeys);
 
 			Map map = new HashMap();
