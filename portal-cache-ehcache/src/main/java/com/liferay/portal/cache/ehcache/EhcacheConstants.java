@@ -16,7 +16,7 @@ package com.liferay.portal.cache.ehcache;
 
 /**
  * @author     Tina Tian
- * @deprecated As of 2.1.0, replaced by {@link
+ * @deprecated As of Judson, replaced by {@link
  *             com.liferay.portal.cache.ehcache.internal.EhcacheConstants}
  */
 @Deprecated
