@@ -22,15 +22,13 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.registry.BasicRegistryImpl;
 import com.liferay.registry.RegistryUtil;
 
 import java.io.Serializable;
-
-import java.lang.reflect.Method;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,9 +50,15 @@ public class FinderCacheImplTest {
 
 	@BeforeClass
 	public static void setUpClass() {
-		_props = (Props)ProxyUtil.newProxyInstance(
-			_classLoader, new Class<?>[] {Props.class},
-			new PropsInvocationHandler());
+		_properties = new HashMap<>();
+
+		_properties.put(PropsKeys.VALUE_OBJECT_ENTITY_BLOCKING_CACHE, "true");
+		_properties.put(PropsKeys.VALUE_OBJECT_ENTITY_CACHE_ENABLED, "true");
+		_properties.put(PropsKeys.VALUE_OBJECT_FINDER_CACHE_ENABLED, "true");
+		_properties.put(
+			PropsKeys.VALUE_OBJECT_MVCC_ENTITY_CACHE_ENABLED, "true");
+		_properties.put(
+			PropsKeys.VALUE_OBJECT_FINDER_CACHE_LIST_THRESHOLD, "-1");
 
 		_serializedMultiVMPool = (MultiVMPool)ProxyUtil.newProxyInstance(
 			_classLoader, new Class<?>[] {MultiVMPool.class},
@@ -100,30 +104,8 @@ public class FinderCacheImplTest {
 
 	@Test
 	public void testThreshold() {
-		_props = (Props)ProxyUtil.newProxyInstance(
-			_classLoader, new Class<?>[] {Props.class},
-			new PropsInvocationHandler() {
-
-				@Override
-				public Object invoke(
-					Object proxy, Method method, Object[] args) {
-
-					String methodName = method.getName();
-
-					if (methodName.equals("get")) {
-						String key = (String)args[0];
-
-						if (PropsKeys.VALUE_OBJECT_FINDER_CACHE_LIST_THRESHOLD.
-								equals(key)) {
-
-							return "2";
-						}
-					}
-
-					return super.invoke(proxy, method, args);
-				}
-
-			});
+		_properties.put(
+			PropsKeys.VALUE_OBJECT_FINDER_CACHE_LIST_THRESHOLD, "2");
 
 		FinderCache finderCache = _activateFinderCache(
 			_notSerializedMultiVMPool);
@@ -161,7 +143,7 @@ public class FinderCacheImplTest {
 
 		finderCacheImpl.setMultiVMPool(multiVMPool);
 
-		finderCacheImpl.setProps(_props);
+		finderCacheImpl.setProps(PropsTestUtil.setProps(_properties));
 
 		finderCacheImpl.activate();
 
@@ -199,7 +181,7 @@ public class FinderCacheImplTest {
 	private static final ClassLoader _classLoader =
 		FinderCacheImplTest.class.getClassLoader();
 	private static MultiVMPool _notSerializedMultiVMPool;
-	private static Props _props;
+	private static Map<String, Object> _properties;
 	private static MultiVMPool _serializedMultiVMPool;
 
 	private FinderPath _finderPath;
