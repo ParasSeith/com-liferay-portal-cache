@@ -18,19 +18,17 @@ import com.liferay.portal.cache.TransactionalPortalCache;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.transactional.TransactionalPortalCacheHelper;
-import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionAttribute;
 import com.liferay.portal.kernel.transaction.TransactionAttribute.Builder;
 import com.liferay.portal.kernel.transaction.TransactionLifecycleListener;
 import com.liferay.portal.kernel.transaction.TransactionStatus;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.registry.BasicRegistryImpl;
 import com.liferay.registry.Registry;
@@ -40,10 +38,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -1090,12 +1085,8 @@ public class TransactionalPortalCacheTest {
 	}
 
 	private void _setEnableTransactionalCache(boolean enabled) {
-		TestProps testProps = new TestProps();
-
-		testProps.setProperty(
+		PropsTestUtil.setProps(
 			PropsKeys.TRANSACTIONAL_CACHE_ENABLED, Boolean.toString(enabled));
-
-		PropsUtil.setProps(testProps);
 	}
 
 	private static final String _KEY_1 = "KEY_1";
@@ -1112,51 +1103,6 @@ public class TransactionalPortalCacheTest {
 	private TestPortalCacheListener<String, String> _testCacheListener;
 	private TestPortalCacheReplicator<String, String> _testCacheReplicator;
 	private TransactionalPortalCache<String, String> _transactionalPortalCache;
-
-	private static class TestProps implements Props {
-
-		@Override
-		public boolean contains(String key) {
-			return _properties.containsKey(key);
-		}
-
-		@Override
-		public String get(String key) {
-			return _properties.get(key);
-		}
-
-		@Override
-		public String get(String key, Filter filter) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public String[] getArray(String key) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public String[] getArray(String key, Filter filter) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Properties getProperties() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Properties getProperties(String prefix, boolean removePrefix) {
-			throw new UnsupportedOperationException();
-		}
-
-		public void setProperty(String key, String value) {
-			_properties.put(key, value);
-		}
-
-		private final Map<String, String> _properties = new HashMap<>();
-
-	}
 
 	private static class TestTrasactionStatus implements TransactionStatus {
 
